@@ -6,7 +6,7 @@
     <title>منصة تجلّي أكاديمي - الصف السادس العلمي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase السهل -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script>
@@ -29,6 +29,7 @@
             --primary-color: #00ccff;
             --secondary-color: #007bff;
             --accent-color: #ff6b6b;
+            --success-color: #38ff5c;
             --dark-bg: #0b0b0b;
             --text-color: #fff;
         }
@@ -72,6 +73,7 @@
             border-radius: 15px;
             margin-bottom: 25px;
             border: 2px solid var(--primary-color);
+            position: relative;
         }
         
         .theme-toggle {
@@ -192,67 +194,145 @@
             display: none;
         }
         
-        #videoContainer {
+        /* تحسينات مشغل الفيديو */
+        .video-player-container {
             position: relative;
-            margin: 20px 0;
-        }
-        
-        #videoContainer iframe {
             width: 100%;
-            height: 400px;
-            border-radius: 10px;
-            border: none;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* عناصر تحكم الفيديو الجديدة */
-        .video-controls {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .control-btn {
-            padding: 10px 15px;
-            background: #333;
-            color: white;
+        #mainVideo {
+            width: 100%;
+            height: 500px;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
+            display: block;
         }
-        
+
+        /* عناصر التحكم في الفيديو - مدمجة */
+        .video-controls-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .video-player-container:hover .video-controls-overlay {
+            opacity: 1;
+        }
+
+        .control-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 15px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            width: auto;
+            padding: 10px 15px;
+            margin: 0;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
         .control-btn:hover {
             background: var(--primary-color);
-            transform: translateY(-2px);
+            transform: scale(1.05);
         }
-        
-        .speed-controls {
+
+        .speed-control {
             display: flex;
-            gap: 5px;
+            align-items: center;
+            gap: 8px;
+            color: white;
         }
-        
+
         .speed-btn {
             padding: 8px 12px;
-            background: #444;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
             color: white;
-            border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            transition: all 0.3s;
+            font-size: 13px;
         }
-        
+
         .speed-btn.active {
-            background: #00ff88;
+            background: var(--success-color);
             color: #000;
         }
 
-        /* وضع قفل الشاشة */
+        .time-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-btn {
+            padding: 10px;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .time-btn:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .lock-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: auto;
+        }
+
+        .lock-btn:hover {
+            background: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        /* شاشة القفل */
         .screen-lock {
             position: fixed;
             top: 0;
@@ -271,29 +351,50 @@
             display: flex;
         }
         
-        .lock-video {
-            width: 90%;
-            height: 70%;
+        .lock-video-container {
+            width: 95%;
+            height: 85%;
+            position: relative;
         }
         
-        .lock-video iframe {
+        .lock-video-container iframe {
             width: 100%;
             height: 100%;
-            border-radius: 10px;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .lock-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
         }
         
         .unlock-btn {
             margin-top: 20px;
             padding: 15px 30px;
-            background: #ff4757;
+            background: var(--accent-color);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
+            transition: all 0.3s;
         }
         
+        .unlock-btn:hover {
+            background: #ff4757;
+            transform: translateY(-2px);
+        }
+
         .video-item {
             background: rgba(40, 40, 40, 0.9);
             padding: 15px;
@@ -346,12 +447,24 @@
                 grid-template-columns: 1fr;
             }
             
-            #videoContainer iframe {
+            #mainVideo {
                 height: 300px;
             }
             
-            .video-controls {
+            .control-bar {
                 flex-direction: column;
+                gap: 10px;
+            }
+            
+            .control-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .lock-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                bottom: 10px;
             }
         }
     </style>
@@ -360,8 +473,19 @@
 
 <!-- وضع قفل الشاشة -->
 <div class="screen-lock" id="screenLock">
-    <div class="lock-video" id="lockVideo">
-        <!-- الفيديو يضاف هنا -->
+    <div class="lock-video-container">
+        <iframe id="lockVideo" frameborder="0" allowfullscreen></iframe>
+        <div class="lock-controls">
+            <button class="speed-btn" onclick="setLockSpeed(0.5)">0.5x</button>
+            <button class="speed-btn" onclick="setLockSpeed(0.75)">0.75x</button>
+            <button class="speed-btn active" onclick="setLockSpeed(1)">1x</button>
+            <button class="speed-btn" onclick="setLockSpeed(1.25)">1.25x</button>
+            <button class="speed-btn" onclick="setLockSpeed(1.5)">1.5x</button>
+            <button class="speed-btn" onclick="setLockSpeed(1.75)">1.75x</button>
+            <button class="speed-btn" onclick="setLockSpeed(2)">2x</button>
+            <button class="control-btn" onclick="lockSeek(-10)">⏪ -10s</button>
+            <button class="control-btn" onclick="lockSeek(10)">⏩ +10s</button>
+        </div>
     </div>
     <button class="unlock-btn" onclick="unlockScreen()">
         <i class="fas fa-unlock"></i> فتح الشاشة
@@ -428,8 +552,41 @@
             <div id="savedLinks"></div>
         </div>
         
-        <div id="videoContainer">
-            <!-- الفيديو وعناصر التحكم تضاف هنا -->
+        <!-- مشغل الفيديو المحسن -->
+        <div class="video-player-container">
+            <iframe id="mainVideo" src="" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+            
+            <!-- عناصر التحكم المدمجة -->
+            <div class="video-controls-overlay">
+                <div class="control-bar">
+                    <button class="lock-btn" onclick="lockScreen()" title="قفل الشاشة">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    
+                    <div class="time-controls">
+                        <button class="time-btn" onclick="seekVideo(-10)" title="ترجيع 10 ثواني">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button class="time-btn" onclick="seekVideo(10)" title="تقديم 10 ثواني">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="control-group">
+                        <span class="speed-control">السرعة:</span>
+                        <button class="speed-btn active" onclick="setPlaybackSpeed(0.5)">0.5x</button>
+                        <button class="speed-btn" onclick="setPlaybackSpeed(0.75)">0.75x</button>
+                        <button class="speed-btn" onclick="setPlaybackSpeed(1)">1x</button>
+                        <button class="speed-btn" onclick="setPlaybackSpeed(1.25)">1.25x</button>
+                        <button class="speed-btn" onclick="setPlaybackSpeed(1.5)">1.5x</button>
+                        <button class="speed-btn" onclick="setPlaybackSpeed(1.75)">1.75x</button>
+                        <button class="speed-btn" onclick="setPlaybackSpeed(2)">2x</button>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <button class="back-button" onclick="backToChapters()">⬅ العودة للفصول</button>
@@ -468,7 +625,7 @@ const elements = {
     subjectTitle: document.getElementById('subjectTitle'),
     chapterTitle: document.getElementById('chapterTitle'),
     savedLinks: document.getElementById('savedLinks'),
-    videoContainer: document.getElementById('videoContainer'),
+    mainVideo: document.getElementById('mainVideo'),
     themeToggle: document.getElementById('themeToggle'),
     screenLock: document.getElementById('screenLock'),
     lockVideo: document.getElementById('lockVideo')
@@ -476,6 +633,7 @@ const elements = {
 
 let currentSubject = "", currentChapter = "";
 let currentVideoUrl = "";
+let currentPlaybackSpeed = 1;
 
 // إدارة الثيم
 function initTheme() {
@@ -623,49 +781,64 @@ function playVideo(link) {
     }
     
     currentVideoUrl = link;
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
     
-    elements.videoContainer.innerHTML = `
-        <iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>
-        <div class="video-controls">
-            <div class="speed-controls">
-                <button class="speed-btn" onclick="changeSpeed(0.5)">0.5x</button>
-                <button class="speed-btn active" onclick="changeSpeed(1)">1x</button>
-                <button class="speed-btn" onclick="changeSpeed(1.5)">1.5x</button>
-                <button class="speed-btn" onclick="changeSpeed(2)">2x</button>
-                <button class="speed-btn" onclick="changeSpeed(3)">3x</button>
-                <button class="speed-btn" onclick="changeSpeed(4)">4x</button>
-            </div>
-            <button class="control-btn" onclick="seekVideo(-10)">⏪ -10s</button>
-            <button class="control-btn" onclick="seekVideo(10)">⏩ +10s</button>
-            <button class="control-btn" onclick="lockScreen()">🔒 قفل الشاشة</button>
-        </div>
-    `;
+    elements.mainVideo.src = embedUrl;
+    currentPlaybackSpeed = 1;
+    updateSpeedButtons();
 }
 
-// ميزات الفيديو الجديدة
-function changeSpeed(speed) {
-    document.querySelectorAll('.speed-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    // في الواقع، تحتاج إلى YouTube API لتغيير السرعة
-    alert(`تم تغيير السرعة إلى ${speed}x (هذه ميزة تجريبية)`);
+// ميزات التحكم في الفيديو
+function setPlaybackSpeed(speed) {
+    currentPlaybackSpeed = speed;
+    updateSpeedButtons();
+    
+    // في التطبيق الحقيقي، تحتاج إلى YouTube IFrame API
+    console.log(`تم تغيير السرعة إلى ${speed}x`);
+    // elements.mainVideo.contentWindow.postMessage(...) للتحكم الحقيقي
+}
+
+function updateSpeedButtons() {
+    document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    const activeBtn = document.querySelector(`.speed-btn[onclick="setPlaybackSpeed(${currentPlaybackSpeed})"]`);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+    }
 }
 
 function seekVideo(seconds) {
-    alert(`تم التقديم ${seconds > 0 ? '+' : ''}${seconds} ثانية (هذه ميزة تجريبية)`);
+    console.log(`تم التقديم ${seconds > 0 ? '+' : ''}${seconds} ثانية`);
+    // التطبيق الفعلي يتطلب YouTube IFrame API
 }
 
 function lockScreen() {
     if (!currentVideoUrl) return;
     
     const videoId = getYouTubeId(currentVideoUrl);
-    elements.lockVideo.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+    elements.lockVideo.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     elements.screenLock.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function unlockScreen() {
     elements.screenLock.classList.remove('active');
-    elements.lockVideo.innerHTML = '';
+    elements.lockVideo.src = '';
+    document.body.style.overflow = 'auto';
+}
+
+function setLockSpeed(speed) {
+    console.log(`سرعة وضع القفل: ${speed}x`);
+    document.querySelectorAll('.lock-controls .speed-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+function lockSeek(seconds) {
+    console.log(`تقديم في وضع القفل: ${seconds} ثانية`);
 }
 
 // تشغيل مباشر
