@@ -179,6 +179,149 @@
             }
         }
         
+        /* مشغل الفيديو المحسن - أكبر حجماً */
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            margin: 20px 0 40px 0;
+        }
+        
+        .video-player {
+            width: 100%;
+            height: 600px; /* زيادة الارتفاع */
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            background: #000;
+        }
+        
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: linear-gradient(45deg, #00ffdd, var(--primary-color));
+            transform: translateY(-3px);
+        }
+        
+        .control-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .time-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .progress-container {
+            flex-grow: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .speed-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .speed-btn.active {
+            background: var(--primary-color);
+        }
+        
+        .quality-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quality-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .quality-btn.active {
+            background: var(--primary-color);
+        }
+        
+        .video-info-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .video-title-display {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        
+        .video-stats {
+            display: flex;
+            gap: 15px;
+            color: #aaa;
+        }
+        
+        .video-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
         .quick-player {
             background: linear-gradient(135deg, #111 0%, #222 100%);
             padding: 35px;
@@ -310,21 +453,6 @@
         
         .hidden {
             display: none;
-        }
-        
-        #videoContainer iframe,
-        #quickContainer iframe {
-            width: 100%;
-            height: 500px;
-            border-radius: 15px;
-            margin-top: 25px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        [data-theme="light"] #videoContainer iframe,
-        [data-theme="light"] #quickContainer iframe {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
         
         ul {
@@ -703,148 +831,6 @@
             margin-bottom: 20px;
         }
         
-        /* مشغل الفيديو المحسن */
-        .video-player-container {
-            position: relative;
-            width: 100%;
-            margin: 20px 0;
-        }
-        
-        .video-player {
-            width: 100%;
-            height: 500px;
-            border-radius: 15px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-        
-        .video-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .control-btn {
-            padding: 12px 20px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .control-btn:hover {
-            background: linear-gradient(45deg, #00ffdd, var(--primary-color));
-            transform: translateY(-3px);
-        }
-        
-        .control-btn:disabled {
-            background: #555;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .time-display {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-color);
-            min-width: 100px;
-            text-align: center;
-        }
-        
-        .progress-container {
-            flex-grow: 1;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: var(--primary-color);
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.1s ease;
-        }
-        
-        .speed-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .speed-btn {
-            padding: 8px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .speed-btn.active {
-            background: var(--primary-color);
-        }
-        
-        .quality-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .quality-btn {
-            padding: 8px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .quality-btn.active {
-            background: var(--primary-color);
-        }
-        
-        .video-info-panel {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-        
-        .video-title-display {
-            font-size: 20px;
-            color: var(--primary-color);
-        }
-        
-        .video-stats {
-            display: flex;
-            gap: 15px;
-            color: #aaa;
-        }
-        
-        .video-stats span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -878,10 +864,8 @@
                 min-width: 100%;
             }
             
-            #videoContainer iframe,
-            #quickContainer iframe,
             .video-player {
-                height: 300px;
+                height: 400px; /* تعديل الارتفاع للشاشات الصغيرة */
             }
             
             .video-info {
@@ -1003,40 +987,13 @@
         </div>
     </header>
 
-    <div class="quick-player">
-        <h3>تشغيل فيديو بسرعة</h3>
-        <input id="quickLink" placeholder="ضع رابط الفيديو هنا">
-        <div class="video-quality">
-            <label for="quickQuality">جودة الفيديو:</label>
-            <select id="quickQuality">
-                <option value="default">افتراضي</option>
-                <option value="hd720">HD (720p)</option>
-                <option value="hd1080">Full HD (1080p)</option>
-                <option value="highres">أعلى جودة</option>
-            </select>
-        </div>
-        <div class="save-duration">
-            <label for="quickSaveDuration">مدة الحفظ:</label>
-            <select id="quickSaveDuration">
-                <option value="1">يوم واحد</option>
-                <option value="7">أسبوع واحد</option>
-                <option value="30">شهر واحد</option>
-                <option value="365">سنة واحدة</option>
-                <option value="forever">إلى الأبد</option>
-            </select>
-        </div>
-        <div style="text-align: center;">
-            <button id="quickPlayBtn">▶ تشغيل</button>
-            <button id="quickSaveBtn"> حفظ الرابط </button>
-        </div>
-        <div id="quickContainer"></div>
-    </div>
-
+    <!-- مشغل الفيديو المتطور - تم وضعه تحت الأزرار مباشرة -->
     <div class="video-player-container">
         <h2>مشغل الفيديو المتطور</h2>
         <div class="video-player" id="videoPlayer">
-            <div style="display: flex; justify-content: center; align-items: center; height: 100%; background: #000; border-radius: 15px;">
-                <p style="color: #fff; font-size: 20px;">سيظهر الفيديو هنا بعد اختياره</p>
+            <div style="display: flex; justify-content: center; align-items: center; height: 100%; background: #000; border-radius: 15px; flex-direction: column;">
+                <i class="fas fa-play-circle" style="font-size: 80px; color: var(--primary-color); margin-bottom: 20px;"></i>
+                <p style="color: #fff; font-size: 24px; text-align: center;">سيظهر الفيديو هنا بعد اختياره<br><span style="font-size: 18px; color: #aaa;">استخدم المشغل السريع أدناه لتشغيل فيديو</span></p>
             </div>
         </div>
         
@@ -1075,6 +1032,34 @@
                 <span><i class="fas fa-thumbs-up"></i> <span id="likeCount">0</span></span>
                 <span><i class="fas fa-calendar"></i> <span id="publishDate">--</span></span>
             </div>
+        </div>
+    </div>
+
+    <div class="quick-player">
+        <h3>تشغيل فيديو بسرعة</h3>
+        <input id="quickLink" placeholder="ضع رابط الفيديو هنا">
+        <div class="video-quality">
+            <label for="quickQuality">جودة الفيديو:</label>
+            <select id="quickQuality">
+                <option value="default">افتراضي</option>
+                <option value="hd720">HD (720p)</option>
+                <option value="hd1080">Full HD (1080p)</option>
+                <option value="highres">أعلى جودة</option>
+            </select>
+        </div>
+        <div class="save-duration">
+            <label for="quickSaveDuration">مدة الحفظ:</label>
+            <select id="quickSaveDuration">
+                <option value="1">يوم واحد</option>
+                <option value="7">أسبوع واحد</option>
+                <option value="30">شهر واحد</option>
+                <option value="365">سنة واحدة</option>
+                <option value="forever">إلى الأبد</option>
+            </select>
+        </div>
+        <div style="text-align: center;">
+            <button id="quickPlayBtn">▶ تشغيل في المشغل المتطور</button>
+            <button id="quickSaveBtn"> حفظ الرابط </button>
         </div>
     </div>
 
@@ -1119,7 +1104,6 @@ const quickPlayBtn = document.getElementById('quickPlayBtn');
 const quickSaveBtn = document.getElementById('quickSaveBtn');
 const quickQualitySelect = document.getElementById('quickQuality');
 const quickSaveDurationSelect = document.getElementById('quickSaveDuration');
-const quickContainer = document.getElementById('quickContainer');
 const localSavesPage = document.getElementById('localSavesPage');
 const localSavesList = document.getElementById('localSavesList');
 const connectionStatus = document.getElementById('connectionStatus');
