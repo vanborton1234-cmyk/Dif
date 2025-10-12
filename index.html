@@ -687,7 +687,7 @@
         <h2>منصة تجلّي أكاديمي</h2>
         <p>يرجى إدخال كود الدخول للوصول إلى المحتوى</p>
         
-        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود المكون من 11 حرفًا" maxlength="11">
+        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود المكون من 10 أحرف" maxlength="10">
         <button class="auth-btn" id="authBtn">دخول</button>
         <div class="error-message" id="errorMessage">الكود غير صحيح، يرجى المحاولة مرة أخرى</div>
     </div>
@@ -700,7 +700,7 @@
             <i class="fas fa-moon"></i>
         </button>
         
-        <h1>منصة تجلّي أكاديمي - للصف السادس العلمي</h1>
+        <h1>المدرسة الالكتروية المجانية</h1>
         
         <div class="pledge">
             <i class="fas fa-hand-holding-heart"></i>
@@ -750,7 +750,7 @@
         <h2>حكم ومواعظ</h2>
         
         <div class="wisdom-card">
-            <p class="wisdom-text">"يبعد الله عنك ما تريد ليعطيك ما تحتاج"</p>
+            <p class="wisdom-text">"يعمل الله عنك ما تريد ليصلحك ما تحتاج"</p>
             <p class="wisdom-source">- الإمام علي بن أبي طالب عليه السلام</p>
         </div>
         
@@ -759,10 +759,9 @@
             <p class="wisdom-source">- القرآن الكريم، سورة البقرة، الآية 216</p>
         </div>
         
-        
         <div class="encouragement">
             <span class="emoji">💪</span>
-          استمر ولا تستسلم، النجاح قادم!
+            استمر ولا تستسلم، النجاح قادم!
             <span class="emoji">🚀</span>
         </div>
     </div>
@@ -788,10 +787,8 @@ const codeInput = document.getElementById('codeInput');
 const authBtn = document.getElementById('authBtn');
 const errorMessage = document.getElementById('errorMessage');
 
-// الكود المطلوب: يبدأ بـ AB وينتهي بـ XY وبينهما 7 أرقام
-const requiredStart = 'AB';
-const requiredEnd = 'XY';
-const codeLength = 11;
+// الكود المطلوب: [حرف عشوائي]S[3 أرقام عشوائية]1[3 أرقام عشوائية]ZN
+const codeLength = 10;
 
 // التحقق إذا كان المستخدم قد دخل من قبل
 function checkAuthentication() {
@@ -807,12 +804,10 @@ function checkAuthentication() {
 // التحقق من صحة الكود
 function validateCode(code) {
     if (code.length !== codeLength) return false;
-    if (!code.startsWith(requiredStart)) return false;
-    if (!code.endsWith(requiredEnd)) return false;
     
-    // التحقق من أن الأجزاء الوسطى هي أرقام
-    const middlePart = code.substring(2, 9);
-    return /^\d+$/.test(middlePart);
+    // الصيغة: [حرف عشوائي]S[3 أرقام عشوائية]1[3 أرقام عشوائية]ZN
+    const regex = /^[A-Z]S\d{3}1\d{3}ZN$/;
+    return regex.test(code);
 }
 
 // معالجة عملية الدخول
