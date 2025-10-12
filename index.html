@@ -532,6 +532,29 @@
             animation: bounce 2s infinite;
         }
         
+        .network-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+        }
+
+        .network-status.online {
+            background: var(--success-color);
+            color: #000;
+        }
+
+        .network-status.offline {
+            background: var(--accent-color);
+            color: white;
+        }
+        
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -648,6 +671,11 @@
             .encouragement {
                 font-size: 20px;
             }
+            
+            .network-status {
+                bottom: 80px;
+                right: 20px;
+            }
         }
     </style>
 </head>
@@ -659,7 +687,7 @@
         <h2>منصة تجلّي أكاديمي</h2>
         <p>يرجى إدخال كود الدخول للوصول إلى المحتوى</p>
         
-        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود" maxlength="11">
+        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود المكون من 11 حرفًا" maxlength="11">
         <button class="auth-btn" id="authBtn">دخول</button>
         <div class="error-message" id="errorMessage">الكود غير صحيح، يرجى المحاولة مرة أخرى</div>
     </div>
@@ -678,6 +706,8 @@
             <i class="fas fa-hand-holding-heart"></i>
             أُقسِمُ بالله سأستمر مهما ضعفت همتي ، وأقسم بان ادخل ولا أسوّف في وقتي من هذه اللحظة
         </div>
+        
+        <p>تم تصميم هذا الموقع لطلّاب السادس</p>
         
         <div class="top-buttons">
             <a class="action-btn" href="https://t.me/N7BBOT" target="_blank">🚀 انضم للتحدي</a>
@@ -729,17 +759,10 @@
             <p class="wisdom-source">- القرآن الكريم، سورة البقرة، الآية 216</p>
         </div>
         
-        <div class="wisdom-card">
-            <p class="wisdom-text">"لهذا مهما كانت النتيجة فى الحمل فهي نتيجة لصالحك، لكن المهم تسوي العليك وما تقصر بحق نفسك حتى الله سبحانه وتعالى يحازبك على تعبك بخير متقطع النظير"</p>
-        </div>
-        
-        <div class="wisdom-card">
-            <p class="wisdom-text">"ف ليش الخوف من المستقبل؟"</p>
-        </div>
         
         <div class="encouragement">
             <span class="emoji">💪</span>
-            استمر ولا تستسلم، النجاح قادم!
+          استمر ولا تستسلم، النجاح قادم!
             <span class="emoji">🚀</span>
         </div>
     </div>
@@ -753,6 +776,9 @@
 </div>
 
 <div class="notification" id="notification">تم تحميل الفيديو بنجاح!</div>
+<div class="network-status" id="networkStatus">
+    <i class="fas fa-wifi"></i> <span id="networkText">الاتصال جيد</span>
+</div>
 
 <script>
 // نظام المصادقة
@@ -825,6 +851,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         initTheme();
         initVideoPlayer();
+        initNetworkMonitoring();
     }
 });
 
@@ -836,6 +863,8 @@ const loadVideoBtn = document.getElementById('loadVideo');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const notification = document.getElementById('notification');
 const themeToggle = document.getElementById('themeToggle');
+const networkStatus = document.getElementById('networkStatus');
+const networkText = document.getElementById('networkText');
 
 // تهيئة مشغل الفيديو
 function initVideoPlayer() {
@@ -864,6 +893,30 @@ function initVideoPlayer() {
     
     // التركيز التلقائي على حقل الإدخال
     videoUrlInput.focus();
+}
+
+// مراقبة حالة الشبكة
+function initNetworkMonitoring() {
+    function updateNetworkStatus() {
+        if (navigator.onLine) {
+            networkStatus.className = 'network-status online';
+            networkStatus.innerHTML = '<i class="fas fa-wifi"></i> <span id="networkText">الاتصال جيد</span>';
+            networkStatus.style.display = 'block';
+            setTimeout(() => {
+                networkStatus.style.display = 'none';
+            }, 3000);
+        } else {
+            networkStatus.className = 'network-status offline';
+            networkStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> <span id="networkText">لا يوجد اتصال بالإنترنت</span>';
+            networkStatus.style.display = 'block';
+        }
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    
+    // التحقق الأولي
+    updateNetworkStatus();
 }
 
 // تنظيف الرابط الملصق
@@ -910,16 +963,30 @@ function loadVideo() {
             // إضافة معلمات إضافية لتحسين الأداء
             embedUrl += '&rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1';
             
-            videoPlayer.innerHTML=`<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border-radius:15px;"></iframe>`;
+            // إنشاء iframe جديد
+            const iframe = document.createElement('iframe');
+            iframe.src = embedUrl;
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.borderRadius = "15px";
+            
+            // مسح المحتوى القديم وإضافة iframe الجديد
+            videoPlayer.innerHTML = '';
+            videoPlayer.appendChild(iframe);
             
             // إخفاء مؤشر التحميل وإظهار الفيديو
             loadingIndicator.style.display = 'none';
+            videoPlayer.style.display = 'block';
             
             showNotification('تم تحميل الفيديو بنجاح!', 'success');
         } else {
             // إخفاء مؤشر التحميل وإظهار رسالة الخطأ
             loadingIndicator.style.display = 'none';
             videoPlaceholder.style.display = 'flex';
+            videoPlayer.style.display = 'none';
             showNotification('رابط اليوتيوب غير صالح. تأكد من نسخ الرابط فقط', 'error');
         }
     }, 1500);
@@ -983,6 +1050,52 @@ function updateThemeIcon(theme) {
 
 // إضافة مستمع الحدث للثيم
 themeToggle.addEventListener('click', toggleTheme);
+
+// تحسينات الأداء مع الإنترنت الضعيف
+let videoLoadAttempts = 0;
+const maxLoadAttempts = 3;
+
+function loadVideoWithRetry(videoId) {
+    if (videoLoadAttempts >= maxLoadAttempts) {
+        showNotification('فشل تحميل الفيديو بعد عدة محاولات. يرجى التحقق من اتصال الإنترنت', 'error');
+        return;
+    }
+    
+    videoLoadAttempts++;
+    
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    iframe.frameBorder = "0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.borderRadius = "15px";
+    
+    iframe.onload = function() {
+        videoLoadAttempts = 0;
+        loadingIndicator.style.display = 'none';
+        showNotification('تم تحميل الفيديو بنجاح!', 'success');
+    };
+    
+    iframe.onerror = function() {
+        if (videoLoadAttempts < maxLoadAttempts) {
+            showNotification(`محاولة تحميل الفيديو مرة أخرى (${videoLoadAttempts}/${maxLoadAttempts})`, 'error');
+            setTimeout(() => {
+                loadVideoWithRetry(videoId);
+            }, 2000);
+        } else {
+            loadingIndicator.style.display = 'none';
+            videoPlaceholder.style.display = 'flex';
+            videoPlayer.style.display = 'none';
+            showNotification('فشل تحميل الفيديو. يرجى المحاولة لاحقاً', 'error');
+        }
+    };
+    
+    videoPlayer.innerHTML = '';
+    videoPlayer.appendChild(iframe);
+    videoPlayer.style.display = 'block';
+}
 </script>
 </body>
 </html>
