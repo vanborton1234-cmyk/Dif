@@ -368,11 +368,13 @@
             color: var(--text-color);
             font-size: 18px;
             transition: all 0.3s ease;
+            font-family: monospace;
         }
 
         [data-theme="light"] .url-input {
             background: #fff;
             color: #333;
+            border: 1px solid #ddd;
         }
         
         .url-input:focus {
@@ -400,6 +402,17 @@
         .load-btn:hover {
             background: var(--secondary-color);
             transform: translateY(-2px);
+        }
+        
+        .paste-hint {
+            text-align: center;
+            color: #aaa;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        [data-theme="light"] .paste-hint {
+            color: #666;
         }
         
         .loading {
@@ -435,6 +448,10 @@
         
         .notification.show {
             transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: var(--accent-color);
         }
         
         .wisdom-section {
@@ -689,6 +706,10 @@
                 <button class="load-btn" id="loadVideo">تشغيل الفيديو</button>
             </div>
             
+            <div class="paste-hint">
+                <i class="fas fa-lightbulb"></i> نصيحة: انسخ الرابط فقط دون نصوص إضافية
+            </div>
+            
             <div class="loading" id="loadingIndicator">
                 <div class="spinner"></div>
                 <p>جاري تحميل الفيديو...</p>
@@ -701,7 +722,7 @@
         <h2>حكم ومواعظ</h2>
         
         <div class="wisdom-card">
-            <p class="wisdom-text">"يبعد الله عنك ما تريد ليعطيك ما تحتاج"</p>
+            <p class="wisdom-text">"يعمل الله عنك ما تريد ليصلحك ما تحتاج"</p>
             <p class="wisdom-source">- الإمام علي بن أبي طالب عليه السلام</p>
         </div>
         
@@ -830,18 +851,52 @@ function initVideoPlayer() {
         }
     });
     
+    // تنظيف الحقل عند التركيز عليه
+    videoUrlInput.addEventListener('focus', function() {
+        this.select();
+    });
+    
+    // معالجة اللصق التلقائي
+    videoUrlInput.addEventListener('paste', function(e) {
+        // السماح للصق بالحدوث أولاً
+        setTimeout(function() {
+            cleanPastedUrl();
+        }, 10);
+    });
+    
     // التركيز التلقائي على حقل الإدخال
     videoUrlInput.focus();
 }
 
+// تنظيف الرابط الملصق
+function cleanPastedUrl() {
+    let url = videoUrlInput.value.trim();
+    
+    // إزالة أي نصوص إضافية قد تكون ملتصقة مع الرابط
+    // البحث عن أول رابط يوتيوب في النص
+    const youtubeRegex = /(https?:\/\/)?(www\.)?(youtube|youtu)\.(com|be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=\n?#]+)/;
+    const match = url.match(youtubeRegex);
+    
+    if (match) {
+        // إذا وجد رابط يوتيوب، استخدمه فقط
+        const videoId = match[6];
+        videoUrlInput.value = `https://www.youtube.com/watch?v=${videoId}`;
+        showNotification('تم تنظيف الرابط تلقائياً', 'success');
+    }
+}
+
 // دالة تحميل الفيديو
 function loadVideo() {
-    const videoUrl = videoUrlInput.value.trim();
+    let videoUrl = videoUrlInput.value.trim();
     
     if (!videoUrl) {
         showNotification('يرجى إدخال رابط الفيديو', 'error');
         return;
     }
+    
+    // تنظيف الرابط قبل التحقق منه
+    cleanPastedUrl();
+    videoUrl = videoUrlInput.value.trim();
     
     // إظهار مؤشر التحميل
     loadingIndicator.style.display = 'block';
@@ -850,40 +905,26 @@ function loadVideo() {
     // محاكاة عملية التحميل
     setTimeout(() => {
         // التحقق من أن الرابط صالح
-        if (isValidVideoUrl(videoUrl)) {
-            const videoId = getYouTubeId(videoUrl);
-            if (videoId) {
-                let embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                
-                // إضافة معلمات إضافية لتحسين الأداء
-                embedUrl += '&rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1';
-                
-                videoPlayer.innerHTML=`<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border-radius:15px;"></iframe>`;
-                
-                // إخفاء مؤشر التحميل وإظهار الفيديو
-                loadingIndicator.style.display = 'none';
-                
-                showNotification('تم تحميل الفيديو بنجاح!', 'success');
-            } else {
-                // إخفاء مؤشر التحميل وإظهار رسالة الخطأ
-                loadingIndicator.style.display = 'none';
-                videoPlaceholder.style.display = 'flex';
-                showNotification('رابط الفيديو غير صالح', 'error');
-            }
+        const videoId = getYouTubeId(videoUrl);
+        if (videoId) {
+            let embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            
+            // إضافة معلمات إضافية لتحسين الأداء
+            embedUrl += '&rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1';
+            
+            videoPlayer.innerHTML=`<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border-radius:15px;"></iframe>`;
+            
+            // إخفاء مؤشر التحميل وإظهار الفيديو
+            loadingIndicator.style.display = 'none';
+            
+            showNotification('تم تحميل الفيديو بنجاح!', 'success');
         } else {
             // إخفاء مؤشر التحميل وإظهار رسالة الخطأ
             loadingIndicator.style.display = 'none';
             videoPlaceholder.style.display = 'flex';
-            showNotification('رابط الفيديو غير صالح', 'error');
+            showNotification('رابط اليوتيوب غير صالح. تأكد من نسخ الرابط فقط', 'error');
         }
     }, 1500);
-}
-
-// التحقق من صحة رابط الفيديو
-function isValidVideoUrl(url) {
-    return url.includes('youtube') || url.includes('vimeo') || 
-           url.includes('mp4') || url.includes('webm') || 
-           url.includes('ogg');
 }
 
 // استخراج معرف فيديو يوتيوب من أي نوع من الروابط
@@ -891,18 +932,9 @@ function getYouTubeId(url) {
     if (!url) return null;
     
     // التعامل مع روابط youtube.com
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-        return (match && match[2].length === 11) ? match[2] : null;
-    }
-    
-    // إذا كان الرابط يحتوي على 11 حرفاً (مثل معرف مباشر)
-    if (url.length === 11 && !url.includes('/') && !url.includes('.')) {
-        return url;
-    }
-    
-    return null;
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
 }
 
 // إظهار الإشعارات
@@ -912,8 +944,10 @@ function showNotification(message, type) {
     // تغيير لون الإشعار بناءً على النوع
     if (type === 'error') {
         notification.style.background = 'var(--accent-color)';
+        notification.classList.add('error');
     } else {
         notification.style.background = 'var(--success-color)';
+        notification.classList.remove('error');
     }
     
     notification.classList.add('show');
