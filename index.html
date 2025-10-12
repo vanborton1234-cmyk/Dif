@@ -278,7 +278,7 @@
             }
         }
         
-        /* مشغل الفيديو المبسط */
+        /* مشغل الفيديو المحسن */
         .simple-video-container {
             position: relative;
             width: 100%;
@@ -356,14 +356,16 @@
         
         .url-input-container {
             display: flex;
+            flex-direction: column;
             margin-bottom: 20px;
+            gap: 15px;
         }
         
         .url-input {
-            flex: 1;
+            width: 100%;
             padding: 18px;
             border: none;
-            border-radius: 12px 0 0 12px;
+            border-radius: 12px;
             background: #222;
             color: var(--text-color);
             font-size: 18px;
@@ -392,16 +394,72 @@
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 0 12px 12px 0;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 18px;
             font-weight: bold;
             transition: all 0.3s ease;
+            width: 100%;
+            animation: bounce 2s infinite;
+            position: relative;
+            overflow: hidden;
         }
         
         .load-btn:hover {
             background: var(--secondary-color);
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.5);
+        }
+        
+        .load-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .load-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .load-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        .video-quality-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quality-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .quality-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .quality-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
         
         .paste-hint {
@@ -557,7 +615,7 @@
         
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-5px); }
         }
         
         @keyframes slideUp {
@@ -568,6 +626,21 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
         }
         
         .floating-btn-container {
@@ -647,15 +720,6 @@
                 font-size: 16px;
             }
             
-            .url-input-container {
-                flex-direction: column;
-            }
-            
-            .url-input, .load-btn {
-                border-radius: 12px;
-                margin-bottom: 10px;
-            }
-            
             .wisdom-section {
                 padding: 25px;
             }
@@ -687,7 +751,7 @@
         <h2>منصة تجلّي أكاديمي</h2>
         <p>يرجى إدخال كود الدخول للوصول إلى المحتوى</p>
         
-        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود المكون من 10 أحرف" maxlength="10">
+        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود المكون من 11 حرفًا" maxlength="11">
         <button class="auth-btn" id="authBtn">دخول</button>
         <div class="error-message" id="errorMessage">الكود غير صحيح، يرجى المحاولة مرة أخرى</div>
     </div>
@@ -700,7 +764,7 @@
             <i class="fas fa-moon"></i>
         </button>
         
-        <h1>منصة تجلي أكاديمي</h1>
+        <h1>منصة تجلّي أكاديمي</h1>
         
         <div class="pledge">
             <i class="fas fa-hand-holding-heart"></i>
@@ -717,9 +781,9 @@
         </div>
     </header>
 
-    <!-- مشغل الفيديو المبسط -->
+    <!-- مشغل الفيديو المحسن -->
     <div class="simple-video-container">
-        <h2>مشغل الفيديو</h2>
+        <h2>مشغل الفيديو المتقدم</h2>
         
         <div class="video-player" id="videoPlayer">
             <div class="video-placeholder" id="videoPlaceholder">
@@ -731,7 +795,16 @@
         <div class="video-controls">
             <div class="url-input-container">
                 <input type="text" class="url-input" id="videoUrl" placeholder="ضع رابط الفيديو هنا" autocomplete="off">
-                <button class="load-btn" id="loadVideo">تشغيل الفيديو</button>
+                <button class="load-btn" id="loadVideo">
+                    <i class="fas fa-play-circle"></i> تشغيل الفيديو
+                </button>
+                
+                <div class="video-quality-controls">
+                    <button class="quality-btn" data-quality="auto">جودة تلقائية</button>
+                    <button class="quality-btn" data-quality="hd720">جودة عالية (720p)</button>
+                    <button class="quality-btn" data-quality="medium">جودة متوسطة (480p)</button>
+                    <button class="quality-btn" data-quality="small">جودة منخفضة (360p)</button>
+                </div>
             </div>
             
             <div class="paste-hint">
@@ -750,7 +823,7 @@
         <h2>حكم ومواعظ</h2>
         
         <div class="wisdom-card">
-            <p class="wisdom-text">"يعمل الله عنك ما تريد ليصلحك ما تحتاج"</p>
+            <p class="wisdom-text">"يبعد الله عنك ما تريد ليعطيك ما تحتاج"</p>
             <p class="wisdom-source">- الإمام علي بن أبي طالب عليه السلام</p>
         </div>
         
@@ -758,7 +831,7 @@
             <p class="wisdom-text">"وعسى أن تكرهوا شيئاً وهو خير لكم"</p>
             <p class="wisdom-source">- القرآن الكريم، سورة البقرة، الآية 216</p>
         </div>
-        
+   
         <div class="encouragement">
             <span class="emoji">💪</span>
             استمر ولا تستسلم، النجاح قادم!
@@ -788,7 +861,7 @@ const authBtn = document.getElementById('authBtn');
 const errorMessage = document.getElementById('errorMessage');
 
 // الكود المطلوب: [حرف عشوائي]S[3 أرقام عشوائية]1[3 أرقام عشوائية]ZN
-const codeLength = 10;
+const codeLength = 11;
 
 // التحقق إذا كان المستخدم قد دخل من قبل
 function checkAuthentication() {
@@ -860,6 +933,12 @@ const notification = document.getElementById('notification');
 const themeToggle = document.getElementById('themeToggle');
 const networkStatus = document.getElementById('networkStatus');
 const networkText = document.getElementById('networkText');
+const qualityButtons = document.querySelectorAll('.quality-btn');
+
+// إعدادات الفيديو
+let currentVideoId = null;
+let currentQuality = 'auto';
+let adaptiveQualityEnabled = true;
 
 // تهيئة مشغل الفيديو
 function initVideoPlayer() {
@@ -886,6 +965,26 @@ function initVideoPlayer() {
         }, 10);
     });
     
+    // إضافة مستمعي الأحداث لأزرار الجودة
+    qualityButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // إزالة الفئة النشطة من جميع الأزرار
+            qualityButtons.forEach(b => b.classList.remove('active'));
+            // إضافة الفئة النشطة للزر المحدد
+            this.classList.add('active');
+            // تحديث الجودة المحددة
+            currentQuality = this.getAttribute('data-quality');
+            
+            // إذا كان هناك فيديو نشط، إعادة تحميله بالجودة الجديدة
+            if (currentVideoId) {
+                reloadVideoWithQuality(currentVideoId, currentQuality);
+            }
+        });
+    });
+    
+    // تعيين الجودة التلقائية كإعداد افتراضي
+    document.querySelector('.quality-btn[data-quality="auto"]').classList.add('active');
+    
     // التركيز التلقائي على حقل الإدخال
     videoUrlInput.focus();
 }
@@ -900,10 +999,20 @@ function initNetworkMonitoring() {
             setTimeout(() => {
                 networkStatus.style.display = 'none';
             }, 3000);
+            
+            // إذا كان الاتصال جيدًا، يمكننا رفع جودة الفيديو
+            if (adaptiveQualityEnabled && currentVideoId) {
+                reloadVideoWithQuality(currentVideoId, 'hd720');
+            }
         } else {
             networkStatus.className = 'network-status offline';
             networkStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> <span id="networkText">لا يوجد اتصال بالإنترنت</span>';
             networkStatus.style.display = 'block';
+            
+            // إذا كان الاتصال ضعيفًا، نخفض جودة الفيديو
+            if (adaptiveQualityEnabled && currentVideoId) {
+                reloadVideoWithQuality(currentVideoId, 'small');
+            }
         }
     }
 
@@ -953,30 +1062,8 @@ function loadVideo() {
         // التحقق من أن الرابط صالح
         const videoId = getYouTubeId(videoUrl);
         if (videoId) {
-            let embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            
-            // إضافة معلمات إضافية لتحسين الأداء
-            embedUrl += '&rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1';
-            
-            // إنشاء iframe جديد
-            const iframe = document.createElement('iframe');
-            iframe.src = embedUrl;
-            iframe.frameBorder = "0";
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            iframe.style.width = "100%";
-            iframe.style.height = "100%";
-            iframe.style.borderRadius = "15px";
-            
-            // مسح المحتوى القديم وإضافة iframe الجديد
-            videoPlayer.innerHTML = '';
-            videoPlayer.appendChild(iframe);
-            
-            // إخفاء مؤشر التحميل وإظهار الفيديو
-            loadingIndicator.style.display = 'none';
-            videoPlayer.style.display = 'block';
-            
-            showNotification('تم تحميل الفيديو بنجاح!', 'success');
+            currentVideoId = videoId;
+            loadVideoWithQuality(videoId, currentQuality);
         } else {
             // إخفاء مؤشر التحميل وإظهار رسالة الخطأ
             loadingIndicator.style.display = 'none';
@@ -985,6 +1072,63 @@ function loadVideo() {
             showNotification('رابط اليوتيوب غير صالح. تأكد من نسخ الرابط فقط', 'error');
         }
     }, 1500);
+}
+
+// تحميل الفيديو بجودة محددة
+function loadVideoWithQuality(videoId, quality) {
+    let embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    
+    // إضافة معلمات إضافية لتحسين الأداء
+    embedUrl += '&rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1';
+    
+    // إضافة معلمة الجودة إذا لم تكن تلقائية
+    if (quality !== 'auto') {
+        embedUrl += `&vq=${quality}`;
+    }
+    
+    // إنشاء iframe جديد
+    const iframe = document.createElement('iframe');
+    iframe.src = embedUrl;
+    iframe.frameBorder = "0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.borderRadius = "15px";
+    
+    // مسح المحتوى القديم وإضافة iframe الجديد
+    videoPlayer.innerHTML = '';
+    videoPlayer.appendChild(iframe);
+    
+    // إخفاء مؤشر التحميل وإظهار الفيديو
+    loadingIndicator.style.display = 'none';
+    videoPlayer.style.display = 'block';
+    
+    showNotification('تم تحميل الفيديو بنجاح!', 'success');
+}
+
+// إعادة تحميل الفيديو بجودة مختلفة
+function reloadVideoWithQuality(videoId, quality) {
+    if (videoPlayer.style.display === 'block') {
+        loadingIndicator.style.display = 'block';
+        
+        setTimeout(() => {
+            loadVideoWithQuality(videoId, quality);
+            showNotification(`تم تغيير جودة الفيديو إلى ${getQualityName(quality)}`, 'success');
+        }, 500);
+    }
+}
+
+// الحصول على اسم الجودة باللغة العربية
+function getQualityName(quality) {
+    const qualityNames = {
+        'auto': 'تلقائية',
+        'hd720': 'عالية (720p)',
+        'medium': 'متوسطة (480p)',
+        'small': 'منخفضة (360p)'
+    };
+    
+    return qualityNames[quality] || quality;
 }
 
 // استخراج معرف فيديو يوتيوب من أي نوع من الروابط
@@ -1050,7 +1194,7 @@ themeToggle.addEventListener('click', toggleTheme);
 let videoLoadAttempts = 0;
 const maxLoadAttempts = 3;
 
-function loadVideoWithRetry(videoId) {
+function loadVideoWithRetry(videoId, quality) {
     if (videoLoadAttempts >= maxLoadAttempts) {
         showNotification('فشل تحميل الفيديو بعد عدة محاولات. يرجى التحقق من اتصال الإنترنت', 'error');
         return;
@@ -1059,7 +1203,13 @@ function loadVideoWithRetry(videoId) {
     videoLoadAttempts++;
     
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    let embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    
+    if (quality !== 'auto') {
+        embedUrl += `&vq=${quality}`;
+    }
+    
+    iframe.src = embedUrl;
     iframe.frameBorder = "0";
     iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
     iframe.allowFullscreen = true;
@@ -1077,7 +1227,7 @@ function loadVideoWithRetry(videoId) {
         if (videoLoadAttempts < maxLoadAttempts) {
             showNotification(`محاولة تحميل الفيديو مرة أخرى (${videoLoadAttempts}/${maxLoadAttempts})`, 'error');
             setTimeout(() => {
-                loadVideoWithRetry(videoId);
+                loadVideoWithRetry(videoId, 'small'); // محاولة بجودة أقل
             }, 2000);
         } else {
             loadingIndicator.style.display = 'none';
