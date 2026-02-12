@@ -5,43 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة العاصفة الثلجية ❄️</title>
     <style>
-        /* --- تنسيقات أساسية وتصميم الثيم الثلجي --- */
+        /* --- المتغيرات والتصميم الثلجي --- */
         :root {
             --primary-color: #00d2ff;
             --secondary-color: #3a7bd5;
             --glass-bg: rgba(255, 255, 255, 0.85);
             --text-color: #333;
+            --bg-body: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --btn-text: white;
+        }
+
+        /* --- الوضع الليلي (Dark Mode) --- */
+        body.dark-mode {
+            --primary-color: #0088cc;
+            --secondary-color: #1a1a1a;
+            --glass-bg: rgba(30, 30, 30, 0.9);
+            --text-color: #f0f0f0;
+            --bg-body: #121212;
+            --btn-text: #f0f0f0;
         }
 
         body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); /* تدرج لوني مريح */
+            background: var(--bg-body);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             color: var(--text-color);
-            overflow-x: hidden;
+            transition: all 0.3s ease;
         }
 
-        /* تأثيرات الخلفية المتحركة (ثلج خفيف) */
-        .snowflake {
-            position: fixed;
-            top: -10px;
-            color: #fff;
-            font-size: 1em;
-            opacity: 0.8;
-            animation: fall linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(100vh); }
-        }
-
-        /* --- الحاوية الرئيسية --- */
         .container {
             width: 90%;
             max-width: 800px;
@@ -55,328 +51,87 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        h1 {
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-        }
-
-        /* --- حقل الإدخال --- */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
-        }
-
-        button.main-btn {
-            padding: 15px 30px;
-            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: transform 0.2s;
-        }
-
-        button.main-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* --- منطقة الفيديو --- */
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* نسبة 16:9 */
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            display: none; /* مخفي حتى يتم تحميل الرابط */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        #player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* طبقة التحكم باللمس (للضغط المطول) */
-        .touch-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80%; /* نترك المساحة السفلية لأدوات اليوتيوب الأصلية */
-            z-index: 10;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: rgba(255,255,255,0.8);
-            font-size: 2rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px #000;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: auto; /* لاستقبال اللمس */
-        }
-        
-        .video-wrapper:hover .touch-overlay {
-            /* إظهار تلميح عند المرور */
-             opacity: 0; /* نتركه مخفياً لعدم الإزعاج، يظهر فقط عند الضغط */
-        }
-
-        .speed-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: none;
-            z-index: 20;
-            font-size: 1.2rem;
-        }
-
-        /* --- أزرار التحكم الإضافية --- */
-        .controls {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .ctrl-btn {
-            background: white;
-            border: 1px solid var(--secondary-color);
-            color: var(--secondary-color);
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .ctrl-btn:hover {
-            background: var(--secondary-color);
-            color: white;
-        }
-
-        /* --- التذييل --- */
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            color: #666;
-            padding-bottom: 20px;
-        }
-
-        .owl-icon {
-            font-size: 1.5rem;
-            vertical-align: middle;
-        }
-
-        /* --- النافذة المنبثقة (Modal) --- */
-        .modal-overlay {
+        /* --- زر تبديل الوضع --- */
+        .theme-toggle {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .modal-show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-text {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .telegram-btn {
-            display: inline-block;
-            background: #0088cc;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            margin: 5px;
-            transition: 0.3s;
-        }
-
-        .telegram-btn:hover {
-            background: #006699;
-            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5rem;
+            top: 20px;
+            left: 20px;
+            background: var(--glass-bg);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
             cursor: pointer;
-            color: #aaa;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* شريط عداد تنازلي */
-        .progress-bar {
-            height: 4px;
-            background: var(--primary-color);
-            width: 100%;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            transition: width 5s linear; /* التوقيت مطابق لمدة العرض */
-        }
+        h1 { color: var(--secondary-color); margin-bottom: 20px; transition: 0.3s; }
+        body.dark-mode h1 { color: #fff; }
 
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input[type="text"] { flex: 1; padding: 15px; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; outline: none; }
+        button.main-btn { padding: 15px 30px; background: linear-gradient(to right, var(--secondary-color), var(--primary-color)); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
+        
+        .video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 15px; overflow: hidden; display: none; margin-bottom: 15px; }
+        #player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* طبقة تحكم بالسرعة */
+        .touch-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: pointer; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; opacity: 0; transition: 0.3s; }
+        .speed-indicator { position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.7); color: #fff; padding: 5px 10px; border-radius: 10px; display: none; z-index: 20; }
+
+        .controls { margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .ctrl-btn { background: white; border: 1px solid var(--secondary-color); color: var(--secondary-color); padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        body.dark-mode .ctrl-btn { background: #333; color: white; border-color: #555; }
+        .ctrl-btn:hover { background: var(--secondary-color); color: white; }
+        
+        /* زر التنزيل */
+        .download-btn { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 20px; text-decoration: none; cursor: pointer; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="modal-overlay" id="infoModal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">×</span>
-            <h2>تنبيه هام ❄️</h2>
-            <p class="modal-text">
-                ادخل لهذه القناة سيتم نشر فيها التحديثات والاضافات
-            </p>
-            <a href="https://t.me/boomaacrist" target="_blank" class="telegram-btn">فتح القناة</a>
-            <br>
-            <a href="https://t.me/LBX_1a89BOT" target="_blank" class="telegram-btn">🤖 بوت البومة الثلجية</a>
-            <div class="progress-bar" id="modalProgress"></div>
-        </div>
-    </div>
-
-    <div id="snow-container"></div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️</button>
 
     <div class="container">
         <h1>منصة العاصفة الثلجية ❄️</h1>
         
         <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="الصق رابط اليوتيوب هنا (يعمل مع جميع الصيغ)...">
+            <input type="text" id="videoUrl" placeholder="الصق رابط اليوتيوب هنا...">
             <button class="main-btn" onclick="loadVideo()">تشغيل ❄️</button>
         </div>
 
         <div class="video-wrapper" id="videoWrapper">
             <div id="player"></div>
             <div class="touch-overlay" id="touchOverlay"></div>
-            <div class="speed-indicator" id="speedIndicator">⚡ سرعة x2</div>
+            <div class="speed-indicator" id="speedIndicator">⚡ سرعة 3x</div>
         </div>
 
         <div class="controls" id="controlsPanel" style="display: none;">
-            <button class="ctrl-btn" onclick="seek(-10)">⏪ 10ث</button>
-            <button class="ctrl-btn" onclick="setSpeed(1)">سرعة عادية</button>
-            <button class="ctrl-btn" onclick="setSpeed(1.5)">محاضرة (1.5x)</button>
-            <button class="ctrl-btn" onclick="setSpeed(2)">سريع (2x)</button>
-            <button class="ctrl-btn" onclick="seek(10)">10ث ⏩</button>
-        </div>
-
-        <div class="footer">
-            <p>هذا الموقع تابع الى بوت العاصفة الثلجية ❄️</p>
-            <p><span class="owl-icon">🦉❄️</span></p>
+            <button class="ctrl-btn" onclick="setSpeed(1)">عادي</button>
+            <button class="ctrl-btn" onclick="setSpeed(3)">سرعة 3x</button>
+            <a href="#" id="downloadLink" target="_blank" class="download-btn">📥 تنزيل الفيديو (خارجي)</a>
         </div>
     </div>
 
     <script>
-        // --- 1. إعداد تأثيرات الثلج ---
-        function createSnow() {
-            const container = document.getElementById('snow-container');
-            for(let i=0; i<20; i++) {
-                const flake = document.createElement('div');
-                flake.className = 'snowflake';
-                flake.textContent = '❄';
-                flake.style.left = Math.random() * 100 + 'vw';
-                flake.style.animationDuration = Math.random() * 3 + 2 + 's';
-                flake.style.fontSize = Math.random() * 10 + 10 + 'px';
-                container.appendChild(flake);
-            }
-        }
-        createSnow();
-
-        // --- 2. إدارة النافذة المنبثقة ---
-        const modal = document.getElementById('infoModal');
-        const progressBar = document.getElementById('modalProgress');
-
-        // إظهار النافذة عند التحميل
-        window.onload = function() {
-            setTimeout(() => {
-                modal.classList.add('modal-show');
-                progressBar.style.width = '0%'; // بدء انكماش الشريط
-                
-                // إخفاء تلقائي بعد 5 ثواني
-                setTimeout(() => {
-                    closeModal();
-                }, 5000);
-            }, 500); // تأخير بسيط لجمالية الحركة
-        };
-
-        function closeModal() {
-            modal.classList.remove('modal-show');
+        // --- ميزة الوضع الليلي ---
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
         }
 
-        // --- 3. التعامل مع يوتيوب API ---
+        // --- تهيئة يوتيوب API ---
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         var player;
-        var isPlayerReady = false;
+        var currentVideoId = "";
 
-        function onYouTubeIframeAPIReady() {
-            // يتم استدعاء هذه الدالة تلقائياً عند جاهزية API
-        }
+        function onYouTubeIframeAPIReady() {}
 
         function createPlayer(videoId) {
+            currentVideoId = videoId;
             if (player) {
                 player.loadVideoById(videoId);
             } else {
@@ -386,8 +141,9 @@
                     videoId: videoId,
                     playerVars: {
                         'playsinline': 1,
-                        'controls': 1, // إظهار أدوات يوتيوب الأساسية
-                        'rel': 0
+                        'controls': 1,
+                        'rel': 0,
+                        'modestbranding': 1
                     },
                     events: {
                         'onReady': onPlayerReady
@@ -396,23 +152,23 @@
             }
             document.getElementById('videoWrapper').style.display = 'block';
             document.getElementById('controlsPanel').style.display = 'flex';
+            document.getElementById('downloadLink').style.display = 'inline-block';
+            // تحديث رابط التنزيل (يستخدم موقع y2mate كمثال)
+            document.getElementById('downloadLink').href = "https://www.y2mate.com/youtube/" + videoId;
         }
 
         function onPlayerReady(event) {
-            isPlayerReady = true;
-            event.target.playVideo();
+            event.target.setPlaybackQuality('tiny'); // جودة منخفضة للنت الضعيف
             setupTouchControls();
         }
 
-        // --- 4. منطق استخراج معرف الفيديو ---
         function loadVideo() {
             const url = document.getElementById('videoUrl').value;
             const videoId = extractVideoID(url);
-            
             if(videoId) {
                 createPlayer(videoId);
             } else {
-                alert("الرابط غير صحيح! يرجى التأكد من نسخ رابط يوتيوب صالح.");
+                alert("رابط غير صحيح!");
             }
         }
 
@@ -422,54 +178,36 @@
             return (match && match[7].length == 11) ? match[7] : false;
         }
 
-        // --- 5. ميزات التحكم الحصرية (السرعة واللمس) ---
         function setSpeed(rate) {
-            if(player && player.setPlaybackRate) {
-                player.setPlaybackRate(rate);
-            }
+            if(player) player.setPlaybackRate(rate);
         }
 
-        function seek(seconds) {
-            if(player && player.getCurrentTime) {
-                const currentTime = player.getCurrentTime();
-                player.seekTo(currentTime + seconds, true);
-            }
-        }
-
-        // إعداد الضغط المطول للتسريع
+        // --- منطق الضغط المطول للسرعة ---
         function setupTouchControls() {
             const overlay = document.getElementById('touchOverlay');
             const indicator = document.getElementById('speedIndicator');
-            let pressTimer;
-
-            // للأجهزة اللمسية (Mobile)
-            overlay.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // منع السلوك الافتراضي
+            
+            const startSpeed = () => {
                 indicator.style.display = 'block';
-                player.setPlaybackRate(2); // تسريع فوري
-            });
+                player.setPlaybackRate(3);
+            };
 
-            overlay.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                indicator.style.display = 'none';
-                player.setPlaybackRate(1); // عودة للسرعة الطبيعية
-            });
-
-            // للماوس (Desktop)
-            overlay.addEventListener('mousedown', () => {
-                indicator.style.display = 'block';
-                player.setPlaybackRate(2);
-            });
-
-            overlay.addEventListener('mouseup', () => {
+            const stopSpeed = () => {
                 indicator.style.display = 'none';
                 player.setPlaybackRate(1);
+            };
+
+            overlay.addEventListener('mousedown', startSpeed);
+            overlay.addEventListener('mouseup', stopSpeed);
+            overlay.addEventListener('mouseleave', stopSpeed);
+            
+            overlay.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startSpeed();
             });
-             
-            // عند خروج الماوس من الفيديو أثناء الضغط
-            overlay.addEventListener('mouseleave', () => {
-                indicator.style.display = 'none';
-                if(player && player.setPlaybackRate) player.setPlaybackRate(1);
+            overlay.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                stopSpeed();
             });
         }
     </script>
