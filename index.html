@@ -3,1270 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد تعليمي متطور</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>منصة العاصفة الثلجية ❄️</title>
     <style>
-        /* أنماط CSS الأساسية */
+        /* --- تنسيقات أساسية وتصميم الثيم الثلجي --- */
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --success-color: #4ecdc4;
-            --warning-color: #ffeaa7;
-            --dark-bg: #0b0b0b;
-            --card-bg: linear-gradient(135deg, #667eea, #764ba2);
-            --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --text-color: #fff;
-            --card-hover: linear-gradient(135deg, #764ba2, #667eea);
+            --primary-color: #00d2ff;
+            --secondary-color: #3a7bd5;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --text-color: #333;
         }
 
-        [data-theme="light"] {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --success-color: #4ecdc4;
-            --warning-color: #ffeaa7;
-            --dark-bg: #f8f9fa;
-            --card-bg: linear-gradient(135deg, #a8edea, #fed6e3);
-            --header-bg: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            --text-color: #333;
-            --card-hover: linear-gradient(135deg, #fed6e3, #a8edea);
-        }
-        
-        * {
-            box-sizing: border-box;
+        body {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 100%);
-            color: var(--text-color);
-            line-height: 1.8;
-            padding: 20px;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); /* تدرج لوني مريح */
             min-height: 100vh;
-            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-color);
             overflow-x: hidden;
         }
 
-        [data-theme="light"] body {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #e9ecef 100%);
-        }
-        
-        /* شاشة المصادقة */
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 100%);
+        /* تأثيرات الخلفية المتحركة (ثلج خفيف) */
+        .snowflake {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1000;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            opacity: 0.8;
+            animation: fall linear infinite;
+            z-index: -1;
         }
-        
-        .auth-box {
-            background: rgba(15, 15, 15, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            border: 2px solid var(--primary-color);
+
+        @keyframes fall {
+            to { transform: translateY(100vh); }
         }
-        
-        .auth-box h2 {
-            color: var(--primary-color);
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-        
-        .auth-box p {
-            margin-bottom: 30px;
-            font-size: 18px;
-            color: #aaa;
-        }
-        
-        .code-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 20px;
-            text-align: center;
-            border-radius: 10px;
-            border: 2px solid var(--primary-color);
-            background: #222;
-            color: white;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
-        
-        .code-input:focus {
-            outline: none;
-            border-color: #00ffdd;
-            box-shadow: 0 0 15px rgba(102, 126, 234, 0.6);
-        }
-        
-        .auth-btn {
-            padding: 15px 30px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        
-        .auth-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
-        }
-        
-        .error-message {
-            color: #ff4757;
-            margin-top: 15px;
-            font-size: 16px;
-            display: none;
-        }
-        
+
+        /* --- الحاوية الرئيسية --- */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px;
-            background: rgba(15, 15, 15, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-            display: none;
-        }
-
-        [data-theme="light"] .container {
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-        
-        header {
-            background: var(--header-bg);
-            padding: 50px 40px;
-            text-align: center;
-            border-radius: 25px;
-            margin-bottom: 50px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border: 2px solid var(--primary-color);
-            animation: float 8s ease-in-out infinite;
-            position: relative;
-        }
-
-        [data-theme="light"] header {
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-        
-        .site-title {
-            font-size: 4.5rem;
-            font-weight: 900;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #fff, #f093fb, #f5576c, #4ecdc4, #667eea);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 3s ease-in-out infinite, float 6s ease-in-out infinite;
-            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
-            line-height: 1.2;
-        }
-
-        @keyframes shimmer {
-            0%, 100% {
-                background-position: 0% 50%;
-                filter: brightness(1);
-            }
-            50% {
-                background-position: 100% 50%;
-                filter: brightness(1.3);
-            }
-        }
-        
-        .pledge {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 25px;
-            border-radius: 20px;
-            margin: 30px 0;
-            border-right: 5px solid var(--primary-color);
-            font-size: 24px;
-            line-height: 1.8;
-            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            animation: slideUp 1s ease;
-        }
-        
-        .pledge i {
-            color: var(--primary-color);
-            margin-left: 10px;
-        }
-        
-        .theme-toggle {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: white;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        [data-theme="light"] .theme-toggle {
-            color: #333;
-            background: rgba(0, 0, 0, 0.1);
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        /* مشغل الفيديو المحسن */
-        .video-section {
-            position: relative;
-            width: 100%;
-            margin: 40px 0 60px 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 2px solid transparent;
-            border-image: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
-            border-image-slice: 1;
-            animation: float 8s ease-in-out infinite;
-            backdrop-filter: blur(10px);
-        }
-
-        [data-theme="light"] .video-section {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
-        }
-        
-        .video-section h2 {
-            font-size: 42px;
-            color: transparent;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 35px;
-            text-align: center;
-            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .video-player {
-            width: 100%;
-            height: 600px;
             border-radius: 20px;
-            border: none;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            background: #000;
-            display: none;
-            position: relative;
-        }
-        
-        .video-placeholder {
-            text-align: center;
-            padding: 80px 20px;
-            color: rgba(255, 255, 255, 0.7);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 600px;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            border-radius: 20px;
-            border: 3px dashed #667eea;
-        }
-
-        [data-theme="light"] .video-placeholder {
-            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-            color: #666;
-        }
-        
-        .video-placeholder i {
-            font-size: 100px;
-            margin-bottom: 30px;
-            display: block;
-            color: #667eea;
-            animation: bounce 3s infinite;
-        }
-        
-        .video-controls {
-            background: rgba(44, 62, 80, 0.7);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            margin: 30px 0 20px 0;
-            animation: slideUp 0.5s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-        
-        .url-input-container {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 30px;
-            gap: 20px;
-        }
-        
-        .url-input {
-            width: 100%;
             padding: 20px;
-            border: none;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-            font-size: 18px;
-            transition: all 0.3s ease;
-            font-family: monospace;
-            border: 2px solid transparent;
+            margin-top: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        [data-theme="light"] .url-input {
-            background: rgba(0, 0, 0, 0.05);
-            color: #333;
-        }
-        
-        .url-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
-            background: rgba(255, 255, 255, 0.15);
+        h1 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
         }
 
-        .load-btn {
-            padding: 20px 35px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            width: 100%;
-            animation: bounce 2s infinite;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .load-btn:hover {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
-        }
-        
-        .video-control-buttons {
+        /* --- حقل الإدخال --- */
+        .input-group {
             display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 30px;
+            gap: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
-        
-        .control-btn {
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+
+        button.main-btn {
             padding: 15px 30px;
-            background: linear-gradient(45deg, #f093fb, #f5576c);
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
             font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
-            min-width: 180px;
+            font-size: 16px;
+            transition: transform 0.2s;
         }
-        
-        .control-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(240, 147, 251, 0.6);
+
+        button.main-btn:hover {
+            transform: scale(1.05);
         }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-        }
-        
-        .spinner {
-            border: 6px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 6px solid #667eea;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            padding: 20px 30px;
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
+
+        /* --- منطقة الفيديو --- */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* نسبة 16:9 */
+            background: #000;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            transform: translateX(150%);
-            transition: transform 0.5s ease;
-            z-index: 1000;
-            font-weight: bold;
-            font-size: 18px;
+            overflow: hidden;
+            display: none; /* مخفي حتى يتم تحميل الرابط */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-        
-        .notification.show {
-            transform: translateX(0);
+
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        
-        .notification.error {
-            background: linear-gradient(45deg, #f5576c, #f093fb);
-        }
-        
-        .wisdom-quote {
-            text-align: center;
-            font-size: 26px;
-            color: transparent;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 50px 0;
-            padding: 35px;
-            background-color: rgba(102, 126, 234, 0.1);
-            border-radius: 20px;
-            border-right: 6px solid #667eea;
-            animation: slideUp 1s ease;
-            min-height: 120px;
+
+        /* طبقة التحكم باللمس (للضغط المطول) */
+        .touch-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80%; /* نترك المساحة السفلية لأدوات اليوتيوب الأصلية */
+            z-index: 10;
+            cursor: pointer;
             display: flex;
-            align-items: center;
             justify-content: center;
-            line-height: 1.8;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-        }
-
-        [data-theme="light"] .wisdom-quote {
-            background-color: rgba(102, 126, 234, 0.05);
-        }
-        
-        .network-status {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 20px;
-            border-radius: 25px;
+            align-items: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 2rem;
             font-weight: bold;
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            backdrop-filter: blur(10px);
+            text-shadow: 0 0 10px #000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: auto; /* لاستقبال اللمس */
+        }
+        
+        .video-wrapper:hover .touch-overlay {
+            /* إظهار تلميح عند المرور */
+             opacity: 0; /* نتركه مخفياً لعدم الإزعاج، يظهر فقط عند الضغط */
         }
 
-        .network-status.online {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: #000;
-        }
-
-        .network-status.offline {
-            background: linear-gradient(45deg, #f5576c, #f093fb);
-            color: white;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* زر القنوات المتحرك */
-        .channels-btn-container {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            z-index: 1000;
-        }
-        
-        .channels-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 35px;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #4ecdc4);
-            background-size: 400% 400%;
-            color: white;
-            text-decoration: none;
+        .speed-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 10px 20px;
             border-radius: 50px;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            animation: floating 3s ease-in-out infinite, gradientShift 6s ease infinite;
-            font-weight: bold;
-            gap: 15px;
-            font-size: 20px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .channels-btn:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            25% { background-position: 50% 50%; }
-            50% { background-position: 100% 50%; }
-            75% { background-position: 50% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        /* صفحة القنوات */
-        .channels-page {
             display: none;
+            z-index: 20;
+            font-size: 1.2rem;
+        }
+
+        /* --- أزرار التحكم الإضافية --- */
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn {
+            background: white;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .ctrl-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        /* --- التذييل --- */
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+            padding-bottom: 20px;
+        }
+
+        .owl-icon {
+            font-size: 1.5rem;
+            vertical-align: middle;
+        }
+
+        /* --- النافذة المنبثقة (Modal) --- */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 100%);
-            z-index: 2000;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .modal-content {
+            background: white;
             padding: 30px;
-            overflow-y: auto;
-        }
-        
-        .channels-header {
+            border-radius: 20px;
             text-align: center;
-            margin-bottom: 50px;
-            padding: 40px;
-            background: var(--header-bg);
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-        }
-        
-        .channels-header h2 {
-            color: white;
-            font-size: 42px;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #fff, #f093fb, #f5576c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .channels-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 35px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .channel-card {
-            background: linear-gradient(135deg, var(--card-bg), var(--card-hover));
-            padding: 35px;
-            border-radius: 25px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            animation: slideUp 0.5s ease;
-            border: 2px solid transparent;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
             position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
         }
-        
-        .channel-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
+
+        .modal-show {
+            opacity: 1;
+            visibility: visible;
         }
-        
-        .channel-card:hover::before {
-            transform: rotate(45deg) translate(50%, 50%);
+
+        .modal-show .modal-content {
+            transform: scale(1);
         }
-        
-        .channel-card:hover {
-            transform: translateY(-12px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            border-color: var(--primary-color);
-        }
-        
-        .channel-icon {
-            font-size: 60px;
-            margin-bottom: 25px;
-            color: white;
-        }
-        
-        .channel-name {
-            font-size: 28px;
-            font-weight: bold;
+
+        .modal-text {
+            font-size: 1.1rem;
             margin-bottom: 20px;
-            color: white;
+            line-height: 1.6;
         }
-        
-        .channel-desc {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 25px;
-        }
-        
-        .back-btn {
-            position: fixed;
-            top: 40px;
-            left: 40px;
-            background: linear-gradient(45deg, #f093fb, #f5576c);
+
+        .telegram-btn {
+            display: inline-block;
+            background: #0088cc;
             color: white;
-            border: none;
-            padding: 18px 30px;
-            border-radius: 50px;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+            transition: 0.3s;
+        }
+
+        .telegram-btn:hover {
+            background: #006699;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
             cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
-            transition: all 0.3s ease;
-            z-index: 2001;
-            backdrop-filter: blur(10px);
+            color: #aaa;
         }
-        
-        .back-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(240, 147, 251, 0.6);
+
+        /* شريط عداد تنازلي */
+        .progress-bar {
+            height: 4px;
+            background: var(--primary-color);
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: width 5s linear; /* التوقيت مطابق لمدة العرض */
         }
-        
-        /* ألوان متنوعة للقنوات */
-        .channel-card:nth-child(1) { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .channel-card:nth-child(2) { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .channel-card:nth-child(3) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .channel-card:nth-child(4) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-        .channel-card:nth-child(5) { background: linear-gradient(135deg, #fa709a, #fee140); }
-        .channel-card:nth-child(6) { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-        .channel-card:nth-child(7) { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
-        .channel-card:nth-child(8) { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
-        .channel-card:nth-child(9) { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
-        .channel-card:nth-child(10) { background: linear-gradient(135deg, #d4fc79, #96e6a1); }
-        
-        @keyframes floating {
-            0%, 100% { 
-                transform: translateY(0); 
-            }
-            50% { 
-                transform: translateY(-15px); 
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            header {
-                padding: 30px 20px;
-            }
-            
-            .site-title {
-                font-size: 2.5rem;
-            }
-            
-            .pledge {
-                font-size: 20px;
-                padding: 20px;
-            }
-            
-            .theme-toggle {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin: 15px auto;
-            }
-            
-            .video-player {
-                height: 400px;
-            }
-            
-            .video-placeholder {
-                height: 400px;
-                padding: 50px 20px;
-            }
-            
-            .channels-btn-container {
-                bottom: 25px;
-                right: 25px;
-            }
-            
-            .channels-btn {
-                padding: 15px 25px;
-                font-size: 18px;
-            }
-            
-            .channels-grid {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-            
-            .wisdom-quote {
-                font-size: 20px;
-                padding: 25px;
-                margin: 30px 0;
-            }
-            
-            .network-status {
-                bottom: 100px;
-                right: 25px;
-            }
-            
-            .control-btn {
-                padding: 12px 20px;
-                font-size: 16px;
-                min-width: 150px;
-            }
-        }
+
     </style>
 </head>
 <body>
 
-<!-- شاشة المصادقة -->
-<div class="auth-container" id="authContainer">
-    <div class="auth-box">
-        <h2>مرحا بك في تطبيقنا🤖</h2>
-        <p>يرجى إدخال كود الدخول للوصول إلى المحتوى</p>
-        
-        <input type="text" class="code-input" id="codeInput" placeholder="أدخل الكود المكون من 11 حرفًا" maxlength="11">
-        <button class="auth-btn" id="authBtn">دخول</button>
-        <div class="error-message" id="errorMessage">الكود غير صحيح، يرجى المحاولة مرة أخرى</div>
-    </div>
-</div>
-
-<!-- المحتوى الرئيسي -->
-<div class="container" id="mainContainer">
-    <header>
-        <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
-        </button>
-        
-        <h1 class="site-title">🌪️العاصفة</h1>
-        
-        <div class="pledge">
-            <i class="fas fa-hand-holding-heart"></i>
-            لاتنسى صلاتك فهي افرض من دراستك  
-        </div>
-    </header>
-
-    <!-- مقولة أهل البيت المتحركة -->
-    <div class="wisdom-quote" id="wisdomQuote">
-        "اطلبوا العلم من المهد إلى اللحد - الإمام علي عليه السلام"
-    </div>
-
-    <!-- مشغل الفيديو المحسن -->
-    <div class="video-section">
-        <h2>مشغل الفيديو المتقدم</h2>
-        
-        <div class="video-player" id="videoPlayer">
-            <div class="video-placeholder" id="videoPlaceholder">
-                <i class="fas fa-play-circle"></i>
-                <p>سيظهر الفيديو هنا بعد إدخال الرابط</p>
-            </div>
-        </div>
-        
-        <div class="video-controls">
-            <div class="url-input-container">
-                <input type="text" class="url-input" id="videoUrl" placeholder="ضع رابط الفيديو من يوتيوب هنا" autocomplete="off">
-                <button class="load-btn" id="loadVideo">
-                    <i class="fas fa-play-circle"></i> تشغيل الفيديو
-                </button>
-                
-                <!-- أزرار التحكم -->
-                <div class="video-control-buttons">
-                    <button class="control-btn" id="rewindBtn">
-                        <i class="fas fa-backward"></i> رجوع 10 ثواني
-                    </button>
-                    <button class="control-btn" id="forwardBtn">
-                        <i class="fas fa-forward"></i> تقدم 10 ثواني
-                    </button>
-                </div>
-            </div>
-            
-            <div class="loading" id="loadingIndicator">
-                <div class="spinner"></div>
-                <p>جاري تحميل الفيديو...</p>
-            </div>
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">×</span>
+            <h2>تنبيه هام ❄️</h2>
+            <p class="modal-text">
+                ادخل لهذه القناة سيتم نشر فيها التحديثات والاضافات
+            </p>
+            <a href="https://t.me/boomaacrist" target="_blank" class="telegram-btn">فتح القناة</a>
+            <br>
+            <a href="https://t.me/LBX_1a89BOT" target="_blank" class="telegram-btn">🤖 بوت البومة الثلجية</a>
+            <div class="progress-bar" id="modalProgress"></div>
         </div>
     </div>
-</div>
 
-<!-- صفحة القنوات -->
-<div class="channels-page" id="channelsPage">
-    <button class="back-btn" id="backBtn">
-        <i class="fas fa-arrow-right"></i> العودة
-    </button>
-    
-    <div class="channels-header">
-        <h2>قنوات التليغرام التعليمية</h2>
-        <p>اختر القناة التي تريد زيارتها</p>
+    <div id="snow-container"></div>
+
+    <div class="container">
+        <h1>منصة العاصفة الثلجية ❄️</h1>
+        
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="الصق رابط اليوتيوب هنا (يعمل مع جميع الصيغ)...">
+            <button class="main-btn" onclick="loadVideo()">تشغيل ❄️</button>
+        </div>
+
+        <div class="video-wrapper" id="videoWrapper">
+            <div id="player"></div>
+            <div class="touch-overlay" id="touchOverlay"></div>
+            <div class="speed-indicator" id="speedIndicator">⚡ سرعة x2</div>
+        </div>
+
+        <div class="controls" id="controlsPanel" style="display: none;">
+            <button class="ctrl-btn" onclick="seek(-10)">⏪ 10ث</button>
+            <button class="ctrl-btn" onclick="setSpeed(1)">سرعة عادية</button>
+            <button class="ctrl-btn" onclick="setSpeed(1.5)">محاضرة (1.5x)</button>
+            <button class="ctrl-btn" onclick="setSpeed(2)">سريع (2x)</button>
+            <button class="ctrl-btn" onclick="seek(10)">10ث ⏩</button>
+        </div>
+
+        <div class="footer">
+            <p>هذا الموقع تابع الى بوت العاصفة الثلجية ❄️</p>
+            <p><span class="owl-icon">🦉❄️</span></p>
+        </div>
     </div>
-    
-    <div class="channels-grid" id="channelsGrid">
-        <!-- سيتم إضافة القنوات ديناميكياً -->
-    </div>
-</div>
 
-<!-- زر القنوات العائم -->
-<div class="channels-btn-container">
-    <a href="#" class="channels-btn" id="channelsBtn">
-        <i class="fas fa-broadcast-tower"></i>
-        <span>اضغط هنا للدخول للقنوات </span>
-    </a>
-</div>
-
-<div class="notification" id="notification">تم تحميل الفيديو بنجاح!</div>
-<div class="network-status" id="networkStatus">
-    <i class="fas fa-wifi"></i> <span id="networkText">الاتصال جيد</span>
-</div>
-
-<script>
-// نظام المصادقة
-const authContainer = document.getElementById('authContainer');
-const mainContainer = document.getElementById('mainContainer');
-const codeInput = document.getElementById('codeInput');
-const authBtn = document.getElementById('authBtn');
-const errorMessage = document.getElementById('errorMessage');
-
-// التحقق إذا كان المستخدم قد دخل من قبل
-function checkAuthentication() {
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
-    if (isAuthenticated === 'true') {
-        authContainer.style.display = 'none';
-        mainContainer.style.display = 'block';
-        return true;
-    }
-    return false;
-}
-
-// التحقق من صحة الكود
-function validateCode(code) {
-    if (code.length !== 11) return false;
-    const regex = /^[A-Z]S\d{3}1\d{3}ZN$/;
-    return regex.test(code);
-}
-
-// معالجة عملية الدخول
-function handleAuthentication() {
-    const code = codeInput.value.trim().toUpperCase();
-    
-    if (validateCode(code)) {
-        localStorage.setItem('isAuthenticated', 'true');
-        authContainer.style.display = 'none';
-        mainContainer.style.display = 'block';
-        initTheme();
-        initVideoPlayer();
-        initNetworkMonitoring();
-        initChannelsPage();
-        initWisdomQuotes();
-    } else {
-        errorMessage.style.display = 'block';
-        codeInput.value = '';
-        codeInput.focus();
-    }
-}
-
-// إضافة مستمعي الأحداث
-authBtn.addEventListener('click', handleAuthentication);
-codeInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') handleAuthentication();
-});
-
-// التحقق من المصادقة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    if (!checkAuthentication()) {
-        authContainer.style.display = 'flex';
-        mainContainer.style.display = 'none';
-        codeInput.focus();
-    } else {
-        initTheme();
-        initVideoPlayer();
-        initNetworkMonitoring();
-        initChannelsPage();
-        initWisdomQuotes();
-    }
-});
-
-// العناصر في DOM
-const videoPlayer = document.getElementById('videoPlayer');
-const videoPlaceholder = document.getElementById('videoPlaceholder');
-const videoUrlInput = document.getElementById('videoUrl');
-const loadVideoBtn = document.getElementById('loadVideo');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const notification = document.getElementById('notification');
-const themeToggle = document.getElementById('themeToggle');
-const networkStatus = document.getElementById('networkStatus');
-const rewindBtn = document.getElementById('rewindBtn');
-const forwardBtn = document.getElementById('forwardBtn');
-const channelsBtn = document.getElementById('channelsBtn');
-const channelsPage = document.getElementById('channelsPage');
-const backBtn = document.getElementById('backBtn');
-const channelsGrid = document.getElementById('channelsGrid');
-const wisdomQuote = document.getElementById('wisdomQuote');
-
-// إعدادات الفيديو
-let currentVideoId = null;
-let youtubePlayer = null;
-
-// تهيئة مشغل الفيديو
-function initVideoPlayer() {
-    loadVideoBtn.addEventListener('click', loadVideo);
-    videoUrlInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') loadVideo();
-    });
-    
-    videoUrlInput.addEventListener('focus', function() {
-        this.select();
-    });
-    
-    videoUrlInput.addEventListener('paste', function(e) {
-        setTimeout(cleanPastedUrl, 10);
-    });
-    
-    rewindBtn.addEventListener('click', rewindVideo);
-    forwardBtn.addEventListener('click', forwardVideo);
-    
-    videoUrlInput.focus();
-}
-
-// تهيئة صفحة القنوات
-function initChannelsPage() {
-    const channels = [
-        {
-            name: "القناة الرئيسية",
-            description: "القناة الرئيسية للمنصة التعليمية",
-            icon: "fas fa-home",
-            url: "https://t.me/DA_alfa"
-        },
-        {
-            name: "المكتبة الدينية",
-            description: "مكتبة شاملة للكتب والمصادر الدينية",
-            icon: "fas fa-book",
-            url: "https://t.me/+wZ9qtBKFfoxkZGRi"
-        },
-        {
-            name: "تفسير القرآن الكريم",
-            description: "تفسير شامل للقرآن الكريم",
-            icon: "fas fa-quran",
-            url: "https://t.me/+wN_PCJBTkrU3Mzdi"
-        },
-        {
-            name: "المحاضرات الدينية",
-            description: "محاضرات ودروس دينية متنوعة",
-            icon: "fas fa-microphone",
-            url: "https://t.me/mahadhra"
-        },
-        {
-            name: "القرآن الكريم صوتي",
-            description: "مقاطع صوتية للقرآن الكريم",
-            icon: "fas fa-music",
-            url: "https://t.me/Hitfon1"
-        },
-        {
-            name: "معلومات وثائقية",
-            description: "معلومات ووثائق قيمة",
-            icon: "fas fa-info-circle",
-            url: "https://t.me/maaloomate"
-        },
-        {
-            name: "نصائح نفسية",
-            description: "نصائح وإرشادات نفسية",
-            icon: "fas fa-heart",
-            url: "https://t.me/Nasiha_nise"
-        },
-        {
-            name: "المساعد في السادس",
-            description: "مساعدة لطلاب الصف السادس",
-            icon: "fas fa-graduation-cap",
-            url: "https://t.me/sads_gr"
-        },
-        {
-            name: "العلوم الإسلامية",
-            description: "علوم إسلامية متنوعة",
-            icon: "fas fa-mosque",
-            url: "https://t.me/axalalz"
-        },
-        {
-            name: "علوم العرب",
-            description: "علوم ومعرفة عربية",
-            icon: "fas fa-globe-asia",
-            url: "https://t.me/arabsdz"
+    <script>
+        // --- 1. إعداد تأثيرات الثلج ---
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            for(let i=0; i<20; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.textContent = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                flake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                container.appendChild(flake);
+            }
         }
-    ];
-    
-    channelsGrid.innerHTML = '';
-    channels.forEach(channel => {
-        const channelCard = document.createElement('div');
-        channelCard.className = 'channel-card';
-        channelCard.innerHTML = `
-            <div class="channel-icon">
-                <i class="${channel.icon}"></i>
-            </div>
-            <div class="channel-name">${channel.name}</div>
-            <div class="channel-desc">${channel.description}</div>
-        `;
-        
-        channelCard.addEventListener('click', function() {
-            window.open(channel.url, '_blank');
-        });
-        
-        channelsGrid.appendChild(channelCard);
-    });
-    
-    channelsBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        showChannelsPage();
-    });
-    
-    backBtn.addEventListener('click', hideChannelsPage);
-}
+        createSnow();
 
-// إظهار/إخفاء صفحة القنوات
-function showChannelsPage() {
-    channelsPage.style.display = 'block';
-    mainContainer.style.display = 'none';
-}
+        // --- 2. إدارة النافذة المنبثقة ---
+        const modal = document.getElementById('infoModal');
+        const progressBar = document.getElementById('modalProgress');
 
-function hideChannelsPage() {
-    channelsPage.style.display = 'none';
-    mainContainer.style.display = 'block';
-}
-
-// تهيئة المقولات المتحركة بالأقوال الموثوقة
-function initWisdomQuotes() {
-    const quotes = [
-        "اطلبوا العلم من المهد إلى اللحد - الإمام علي عليه السلام",
-        "قيمة كل امرء ما يحسنه - الإمام علي عليه السلام",
-        "كن عالماً أو متعلماً ولا تكن بين ذلك - الإمام الصادق عليه السلام",
-        "من علمك حرفاً صرت له عبداً - الإمام علي عليه السلام",
-        "العلم سلطان - الإمام علي عليه السلام",
-        "العلم نور والجهل ظلام - الإمام الصادق عليه السلام",
-        "من عمل بما علم ورثه الله علم ما لم يعلم - الإمام علي عليه السلام",
-        "العلم شجرة والعمل ثمرة - الإمام علي عليه السلام",
-        "لا خير في علم لا ينفع - الإمام علي عليه السلام",
-        "حب العلم دين يدان به - الإمام علي عليه السلام",
-        "العلم في الصغر كالنقش في الحجر - الإمام علي عليه السلام",
-        "العلم مقرون بالعمل - الإمام علي عليه السلام",
-        "العلم يرفع بيتاً لا عماد له - الإمام علي عليه السلام",
-        "العلم خير من المال - الإمام علي عليه السلام",
-        "العلم حياة - الإمام علي عليه السلام",
-        "من طلب العلم تكفل الله له برزقه - الإمام الصادق عليه السلام",
-        "العلماء باقون ما بقي الدهر - الإمام علي عليه السلام",
-        "العلم يدعو إلى العمل - الإمام علي عليه السلام",
-        "العلم يهدي إلى الجنة - الإمام علي عليه السلام",
-        "العلم نور يقذفه الله في قلب من يشاء - الإمام علي عليه السلام"
-    ];
-    
-    let currentQuoteIndex = 0;
-    
-    setInterval(() => {
-        currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-        wisdomQuote.textContent = `"${quotes[currentQuoteIndex]}"`;
-        wisdomQuote.style.animation = 'none';
-        setTimeout(() => {
-            wisdomQuote.style.animation = 'slideUp 1s ease';
-        }, 10);
-    }, 5000);
-}
-
-// مراقبة حالة الشبكة
-function initNetworkMonitoring() {
-    function updateNetworkStatus() {
-        if (navigator.onLine) {
-            networkStatus.className = 'network-status online';
-            networkStatus.innerHTML = '<i class="fas fa-wifi"></i> <span id="networkText">الاتصال جيد</span>';
-            networkStatus.style.display = 'block';
+        // إظهار النافذة عند التحميل
+        window.onload = function() {
             setTimeout(() => {
-                networkStatus.style.display = 'none';
-            }, 3000);
-        } else {
-            networkStatus.className = 'network-status offline';
-            networkStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> <span id="networkText">لا يوجد اتصال بالإنترنت</span>';
-            networkStatus.style.display = 'block';
+                modal.classList.add('modal-show');
+                progressBar.style.width = '0%'; // بدء انكماش الشريط
+                
+                // إخفاء تلقائي بعد 5 ثواني
+                setTimeout(() => {
+                    closeModal();
+                }, 5000);
+            }, 500); // تأخير بسيط لجمالية الحركة
+        };
+
+        function closeModal() {
+            modal.classList.remove('modal-show');
         }
-    }
 
-    window.addEventListener('online', updateNetworkStatus);
-    window.addEventListener('offline', updateNetworkStatus);
-    updateNetworkStatus();
-}
+        // --- 3. التعامل مع يوتيوب API ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// تنظيف الرابط الملصق
-function cleanPastedUrl() {
-    let url = videoUrlInput.value.trim();
-    const youtubeRegex = /(https?:\/\/)?(www\.)?(youtube|youtu)\.(com|be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=\n?#]+)/;
-    const match = url.match(youtubeRegex);
-    
-    if (match) {
-        const videoId = match[6];
-        videoUrlInput.value = `https://www.youtube.com/watch?v=${videoId}`;
-        showNotification('تم تنظيف الرابط تلقائياً', 'success');
-    }
-}
+        var player;
+        var isPlayerReady = false;
 
-// دالة تحميل الفيديو
-function loadVideo() {
-    let videoUrl = videoUrlInput.value.trim();
-    
-    if (!videoUrl) {
-        showNotification('يرجى إدخال رابط الفيديو', 'error');
-        return;
-    }
-    
-    cleanPastedUrl();
-    videoUrl = videoUrlInput.value.trim();
-    
-    loadingIndicator.style.display = 'block';
-    videoPlaceholder.style.display = 'none';
-    
-    setTimeout(() => {
-        const videoId = getYouTubeId(videoUrl);
-        if (videoId) {
-            currentVideoId = videoId;
-            loadYouTubePlayer(videoId);
-        } else {
-            loadingIndicator.style.display = 'none';
-            videoPlaceholder.style.display = 'flex';
-            videoPlayer.style.display = 'none';
-            showNotification('رابط اليوتيوب غير صالح', 'error');
+        function onYouTubeIframeAPIReady() {
+            // يتم استدعاء هذه الدالة تلقائياً عند جاهزية API
         }
-    }, 1500);
-}
 
-// تحميل مشغل يوتيوب
-function loadYouTubePlayer(videoId) {
-    if (youtubePlayer) {
-        videoPlayer.removeChild(youtubePlayer);
-    }
-    
-    youtubePlayer = document.createElement('iframe');
-    youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-    youtubePlayer.frameBorder = "0";
-    youtubePlayer.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    youtubePlayer.allowFullscreen = true;
-    youtubePlayer.style.width = "100%";
-    youtubePlayer.style.height = "100%";
-    youtubePlayer.style.borderRadius = "20px";
-    
-    videoPlayer.innerHTML = '';
-    videoPlayer.appendChild(youtubePlayer);
-    
-    loadingIndicator.style.display = 'none';
-    videoPlayer.style.display = 'block';
-    
-    showNotification('تم تحميل الفيديو بنجاح!', 'success');
-}
+        function createPlayer(videoId) {
+            if (player) {
+                player.loadVideoById(videoId);
+            } else {
+                player = new YT.Player('player', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: videoId,
+                    playerVars: {
+                        'playsinline': 1,
+                        'controls': 1, // إظهار أدوات يوتيوب الأساسية
+                        'rel': 0
+                    },
+                    events: {
+                        'onReady': onPlayerReady
+                    }
+                });
+            }
+            document.getElementById('videoWrapper').style.display = 'block';
+            document.getElementById('controlsPanel').style.display = 'flex';
+        }
 
-// الرجوع 10 ثواني
-function rewindVideo() {
-    if (youtubePlayer) {
-        showNotification('تم الرجوع 10 ثواني', 'success');
-    } else {
-        showNotification('لا يوجد فيديو نشط', 'error');
-    }
-}
+        function onPlayerReady(event) {
+            isPlayerReady = true;
+            event.target.playVideo();
+            setupTouchControls();
+        }
 
-// التقدم 10 ثواني
-function forwardVideo() {
-    if (youtubePlayer) {
-        showNotification('تم التقدم 10 ثواني', 'success');
-    } else {
-        showNotification('لا يوجد فيديو نشط', 'error');
-    }
-}
+        // --- 4. منطق استخراج معرف الفيديو ---
+        function loadVideo() {
+            const url = document.getElementById('videoUrl').value;
+            const videoId = extractVideoID(url);
+            
+            if(videoId) {
+                createPlayer(videoId);
+            } else {
+                alert("الرابط غير صحيح! يرجى التأكد من نسخ رابط يوتيوب صالح.");
+            }
+        }
 
-// استخراج معرف فيديو يوتيوب
-function getYouTubeId(url) {
-    if (!url) return null;
-    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[7].length === 11) ? match[7] : null;
-}
+        function extractVideoID(url) {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            var match = url.match(regExp);
+            return (match && match[7].length == 11) ? match[7] : false;
+        }
 
-// إظهار الإشعارات
-function showNotification(message, type) {
-    notification.textContent = message;
-    
-    if (type === 'error') {
-        notification.style.background = 'linear-gradient(45deg, #f5576c, #f093fb)';
-        notification.classList.add('error');
-    } else {
-        notification.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
-        notification.classList.remove('error');
-    }
-    
-    notification.classList.add('show');
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 3000);
-}
+        // --- 5. ميزات التحكم الحصرية (السرعة واللمس) ---
+        function setSpeed(rate) {
+            if(player && player.setPlaybackRate) {
+                player.setPlaybackRate(rate);
+            }
+        }
 
-// إدارة الثيم
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-}
+        function seek(seconds) {
+            if(player && player.getCurrentTime) {
+                const currentTime = player.getCurrentTime();
+                player.seekTo(currentTime + seconds, true);
+            }
+        }
 
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
-}
+        // إعداد الضغط المطول للتسريع
+        function setupTouchControls() {
+            const overlay = document.getElementById('touchOverlay');
+            const indicator = document.getElementById('speedIndicator');
+            let pressTimer;
 
-function updateThemeIcon(theme) {
-    const icon = themeToggle.querySelector('i');
-    icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-}
+            // للأجهزة اللمسية (Mobile)
+            overlay.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // منع السلوك الافتراضي
+                indicator.style.display = 'block';
+                player.setPlaybackRate(2); // تسريع فوري
+            });
 
-themeToggle.addEventListener('click', toggleTheme);
-</script>
+            overlay.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                indicator.style.display = 'none';
+                player.setPlaybackRate(1); // عودة للسرعة الطبيعية
+            });
+
+            // للماوس (Desktop)
+            overlay.addEventListener('mousedown', () => {
+                indicator.style.display = 'block';
+                player.setPlaybackRate(2);
+            });
+
+            overlay.addEventListener('mouseup', () => {
+                indicator.style.display = 'none';
+                player.setPlaybackRate(1);
+            });
+             
+            // عند خروج الماوس من الفيديو أثناء الضغط
+            overlay.addEventListener('mouseleave', () => {
+                indicator.style.display = 'none';
+                if(player && player.setPlaybackRate) player.setPlaybackRate(1);
+            });
+        }
+    </script>
 </body>
 </html>
